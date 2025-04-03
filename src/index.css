@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+.bg-white {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  button {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  
+  button:hover {
+    background-color: #1e40af;
+  }
+  
