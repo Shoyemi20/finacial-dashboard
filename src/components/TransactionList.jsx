@@ -1,27 +1,43 @@
-//import { useTransactions } from "../context/TransactionContext";
-
-const TransactionList = ({ expenses }) => {
-    return (
-      <div className="bg-white p-4 rounded shadow mt-4">
-        <h2 className="text-lg font-semibold mb-2">Transaction History</h2>
+const TransactionList = ({ expenses, incomes }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+      {/* Expenses Section */}
+      <div className="bg-white p-4 rounded shadow">
+        <h2 className="text-xl font-semibold mb-4 text-red-500">Expenses</h2>
         {expenses.length === 0 ? (
-          <p className="text-gray-500">No transactions yet.</p>
+          <p className="text-gray-500">No expenses yet</p>
         ) : (
           <ul>
-            {expenses.map((tx) => (
-              <li
-                key={tx.id}
-                className="flex justify-between border-b py-2 text-sm text-gray-700"
-              >
-                <span>{tx.name}</span>
-                <span>{tx.amount.toLocaleString()}₦</span>
+            {expenses.map((expense) => (
+              <li key={expense.id} className="flex justify-between py-1 border-b">
+                <span>{expense.name}</span>
+                <span className="text-red-600">-₦{expense.amount}</span>
               </li>
             ))}
           </ul>
         )}
       </div>
-    );
-  };
-  
-  export default TransactionList;
-  
+
+      {/* Incomes Section */}
+      <div className="bg-white p-4 rounded shadow">
+        <h2 className="text-xl font-semibold mb-4 text-green-500">Incomes</h2>
+        {incomes.length === 0 ? (
+          <p className="text-gray-500">No incomes yet</p>
+        ) : (
+          <ul>
+            {incomes.map((income) => (
+              <li key={income.id} className="flex justify-between py-1 border-b">
+                <span>{income.name}</span>
+                <span className="text-green-600">+₦{income.amount}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TransactionList;
+
+
