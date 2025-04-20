@@ -1,19 +1,26 @@
-const OverviewCards = () => {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {/* Total Expenses Card */}
-      <div className="p-6 bg-white shadow-lg rounded-lg border-l-4 border-red-500 transition transform hover:scale-105 duration-300">
-        <h3 className="text-lg font-semibold text-gray-600">Total Expenses</h3>
-        <p className="text-3xl font-bold text-red-600">₦1,250</p>
-      </div>
+const OverviewCards = ({ expenses, budget }) => {
+  const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+  const balance = budget - totalSpent;
 
-      {/* Remaining Budget Card */}
-      <div className="p-6 bg-white shadow-lg rounded-lg border-l-4 border-green-500 transition transform hover:scale-105 duration-300">
-        <h3 className="text-lg font-semibold text-gray-600">Remaining Budget</h3>
-        <p className="text-3xl font-bold text-green-600">₦750</p>
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      <div className="bg-white p-4 rounded shadow text-center">
+        <h3 className="text-lg font-semibold">Budget</h3>
+        <p className="text-2xl font-bold text-green-500">₦{budget.toLocaleString()}</p>
+      </div>
+      <div className="bg-white p-4 rounded shadow text-center">
+        <h3 className="text-lg font-semibold">Total Spent</h3>
+        <p className="text-2xl font-bold text-red-500">₦{totalSpent.toLocaleString()}</p>
+      </div>
+      <div className="bg-white p-4 rounded shadow text-center">
+        <h3 className="text-lg font-semibold">Remaining</h3>
+        <p className={`text-2xl font-bold ${balance < 0 ? "text-red-600" : "text-blue-600"}`}>
+         ₦{balance.toLocaleString()}
+        </p>
       </div>
     </div>
   );
 };
 
 export default OverviewCards;
+

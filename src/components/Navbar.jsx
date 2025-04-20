@@ -1,43 +1,150 @@
-import { FaBell } from "react-icons/fa";
 import { useState } from "react";
+import {
+  FaBell,
+  FaSearch,
+  FaMoon,
+  FaSun,
+  FaBars,
+  FaRegBell,
+} from "react-icons/fa";
+import { useDarkMode } from "../context/DarkModeContext";
+import profileImage from "../assets/profile.png";
 
-const Navbar = () => {
-  const [notifications, setNotifications] = useState(3); // Example notification count
+const Navbar = ({ toggleSidebar }) => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // Sample notification data
+  const notifications = [
+    { id: 1, text: "New report generated", time: "2 mins ago", read: false },
+    { id: 2, text: "Payment received", time: "1 hour ago", read: true },
+    { id: 3, text: "System update available", time: "3 hours ago", read: true },
+  ];
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-white shadow-md">
-      {/* Logo / Title */}
-      <h1 className="text-xl font-bold text-gray-800">Personal Finance</h1>
-
-      {/* Right Section */}
+    <nav
+      className={`sticky top-0 z-10 p-4 shadow-md flex justify-between items-center ${
+        isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+      }`}
+    >
+      {/* Left side - Title and Mobile Menu */}
       <div className="flex items-center gap-4">
-        {/* Search Bar */}
-        <div className="relative">
+        <button
+          className="md:hidden p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+          onClick={toggleSidebar}
+        >
+          <FaBars />
+        </button>
+        <h1 className="text-xl font-bold">Personal Dashboard</h1>
+      </div>
+
+      {/* Right side - Search and User */}
+      <div className="flex items-center gap-4">
+        {/* Search bar - moved to right */}
+        <div
+          className={`hidden md:flex items-center gap-2 px-3 py-2 rounded-lg ${
+            isDarkMode ? "bg-gray-700" : "bg-gray-100"
+          }`}
+        >
+          <FaSearch className="text-gray-500" />
           <input
             type="text"
             placeholder="Search..."
-            className="p-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            className={`bg-transparent border-none focus:outline-none w-40 ${
+              isDarkMode ? "placeholder-gray-400" : "placeholder-gray-500"
+            }`}
           />
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
         </div>
 
-        {/* Notification Bell with Badge */}
-        <div className="relative cursor-pointer">
-          <FaBell className="text-gray-500 hover:text-gray-700 transition duration-300 text-lg" />
-          {notifications > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-              {notifications}
-            </span>
+        {/* Notification Bell with Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 relative"
+          >
+            <FaBell />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* Notification Dropdown */}
+          {showNotifications && (
+            <div
+              className={`absolute right-0 mt-2 w-72 rounded-md shadow-lg py-1 z-50 ${
+                isDarkMode ? "bg-gray-700" : "bg-white"
+              }`}
+            >
+              <div
+                className={`px-4 py-2 border-b ${
+                  isDarkMode ? "border-gray-600" : "border-gray-200"
+                }`}
+              >
+                <p className="font-medium">Notifications</p>
+                <p className="text-xs">{unreadCount} new notifications</p>
+              </div>
+              <div className="max-h-60 overflow-y-auto">
+                {notifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className={`px-4 py-3 hover:bg-opacity-50 ${
+                      isDarkMode
+                        ? notification.read
+                          ? "hover:bg-gray-600"
+                          : "bg-gray-600 hover:bg-gray-500"
+                        : notification.read
+                        ? "hover:bg-gray-100"
+                        : "bg-blue-50 hover:bg-blue-100"
+                    }`}
+                  >
+                    <p className="text-sm">{notification.text}</p>
+                    <p
+                      className={`text-xs mt-1 ${
+                        isDarkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      {notification.time}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div
+                className={`px-4 py-2 border-t ${
+                  isDarkMode ? "border-gray-600" : "border-gray-200"
+                }`}
+              >
+                <button className="text-sm text-blue-500 hover:text-blue-700">
+                  Mark all as read
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
-        {/* Profile Image */}
-        <img
-          src="/profile.png"
-          alt="Profile"
-          className="w-10 h-10 rounded-full border-2 border-gray-300 object-cover"
-          onError={(e) => (e.target.src = "https://via.placeholder.com/40")} // Fallback image
-        />
+        <button
+          onClick={toggleDarkMode}
+          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+        >
+          {isDarkMode ? <FaSun className="text-yellow-300" /> : <FaMoon />}
+        </button>
+
+        <div className="flex items-center gap-2">
+          <img
+            src={profileImage}
+            alt="Your Name"
+            className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
+          />
+          <div>
+            <p className="font-medium">Your Name</p>{" "}
+            {/* Update with your name */}
+            <p className="text-sm opacity-70">Your Role</p>{" "}
+            {/* Update with your role */}
+          </div>
+        </div>
       </div>
     </nav>
   );

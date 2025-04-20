@@ -19,4 +19,11 @@
   button:hover {
     background-color: #1e40af;
   }
+  .dark {
+    background-color: #1a202c;
+    color: white;
+  }
   
+  .dark .some-element {
+    background-color: #2d3748;
+  }  
