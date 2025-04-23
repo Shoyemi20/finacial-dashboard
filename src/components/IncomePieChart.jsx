@@ -3,16 +3,15 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { useDarkMode } from "../context/DarkModeContext";
 
-// Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PieChart = ({ expenses }) => {
+const IncomePieChart = ({ incomes }) => {
   const { isDarkMode } = useDarkMode();
 
-  // Group expenses by category and calculate total per category
-  const categoryTotals = expenses.reduce((acc, expense) => {
-    const category = expense.category || "Uncategorized";
-    acc[category] = (acc[category] || 0) + Number(expense.amount);
+  // Group incomes by category
+  const categoryTotals = incomes.reduce((acc, income) => {
+    const category = income.category || "Uncategorized";
+    acc[category] = (acc[category] || 0) + Number(income.amount);
     return acc;
   }, {});
 
@@ -70,7 +69,7 @@ const PieChart = ({ expenses }) => {
       <h3 className={`text-lg font-semibold text-center mb-4 ${
         isDarkMode ? "text-gray-200" : "text-gray-700"
       }`}>
-        Expense Breakdown
+        Income Breakdown
       </h3>
       <div className="h-64">
         <Pie data={data} options={options} />
@@ -79,5 +78,5 @@ const PieChart = ({ expenses }) => {
   );
 };
 
-export default PieChart;
+export default IncomePieChart;
 

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import OverviewCards from "../components/OverviewCards";
-import ExpenseChart from "../components/ExpenseChart";
+import TogglePieChart from "../components/TogglePieChart";
 import ExpenseForm from "../components/ExpenseForm";
 import TransactionList from "../components/TransactionList";
 import IncomeForm from "../components/IncomeForm";
 import BudgetForm from "../components/BudgetForm";
+
+
 
 const Dashboard = () => {
   const [budget, setBudget] = useState(2000);
@@ -51,9 +53,9 @@ const deleteIncome = (id) => {
         budget={budget} 
       />
 
-      {/* 2. Expense chart + form */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ExpenseChart expenses={expenses} />
+       {/* 2. Toggle Pie Chart + Expense Form */}
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <TogglePieChart expenses={expenses} incomes={incomes} />
         <ExpenseForm addExpense={addExpense} />
       </div>
 
@@ -70,6 +72,8 @@ const deleteIncome = (id) => {
   deleteExpense={deleteExpense} 
   deleteIncome={deleteIncome} 
 />
+
+
     </div>
   );
 };
