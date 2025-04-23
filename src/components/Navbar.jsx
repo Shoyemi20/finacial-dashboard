@@ -5,7 +5,6 @@ import {
   FaMoon,
   FaSun,
   FaBars,
-  FaRegBell,
 } from "react-icons/fa";
 import { useDarkMode } from "../context/DarkModeContext";
 import profileImage from "../assets/profile.png";
@@ -13,8 +12,8 @@ import profileImage from "../assets/profile.png";
 const Navbar = ({ toggleSidebar }) => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-  // Sample notification data
   const notifications = [
     { id: 1, text: "New report generated", time: "2 mins ago", read: false },
     { id: 2, text: "Payment received", time: "1 hour ago", read: true },
@@ -29,7 +28,7 @@ const Navbar = ({ toggleSidebar }) => {
         isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
-      {/* Left side - Title and Mobile Menu */}
+      {/* Left - Title & Hamburger */}
       <div className="flex items-center gap-4">
         <button
           className="md:hidden p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -40,9 +39,9 @@ const Navbar = ({ toggleSidebar }) => {
         <h1 className="text-xl font-bold">Personal Dashboard</h1>
       </div>
 
-      {/* Right side - Search and User */}
+      {/* Right - Icons & User Info */}
       <div className="flex items-center gap-4">
-        {/* Search bar - moved to right */}
+        {/* Search */}
         <div
           className={`hidden md:flex items-center gap-2 px-3 py-2 rounded-lg ${
             isDarkMode ? "bg-gray-700" : "bg-gray-100"
@@ -58,7 +57,7 @@ const Navbar = ({ toggleSidebar }) => {
           />
         </div>
 
-        {/* Notification Bell with Dropdown */}
+        {/* Notifications */}
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
@@ -72,7 +71,6 @@ const Navbar = ({ toggleSidebar }) => {
             )}
           </button>
 
-          {/* Notification Dropdown */}
           {showNotifications && (
             <div
               className={`absolute right-0 mt-2 w-72 rounded-md shadow-lg py-1 z-50 ${
@@ -125,6 +123,7 @@ const Navbar = ({ toggleSidebar }) => {
           )}
         </div>
 
+        {/* Theme Toggle */}
         <button
           onClick={toggleDarkMode}
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -132,18 +131,40 @@ const Navbar = ({ toggleSidebar }) => {
           {isDarkMode ? <FaSun className="text-yellow-300" /> : <FaMoon />}
         </button>
 
-        <div className="flex items-center gap-2">
-          <img
-            src={profileImage}
-            alt="Your Name"
-            className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
-          />
-          <div>
-            <p className="font-medium">Your Name</p>{" "}
-            {/* Update with your name */}
-            <p className="text-sm opacity-70">Your Role</p>{" "}
-            {/* Update with your role */}
-          </div>
+        {/* Static Profile Section */}
+        <div className="relative">
+          <button
+            onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+            className="flex items-center gap-2 focus:outline-none"
+          >
+            <img
+              src={profileImage}
+              alt="User"
+              className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
+            />
+            <div className="hidden md:block text-left">
+              <p className="font-medium">Your Name</p>
+              <p className="text-sm opacity-70">Logged In</p>
+            </div>
+          </button>
+
+          {showProfileDropdown && (
+            <div
+              className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-2 z-50`}
+            >
+              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                View Profile
+              </button>
+              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                Account Settings
+              </button>
+              <button
+                className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-600 dark:text-red-300"
+              >
+                Log Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
@@ -151,3 +172,4 @@ const Navbar = ({ toggleSidebar }) => {
 };
 
 export default Navbar;
+

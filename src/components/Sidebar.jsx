@@ -1,4 +1,4 @@
-import { FaHome, FaWallet, FaChartBar, FaCog, FaTimes } from "react-icons/fa";
+import { FaHome, FaWallet, FaChartBar, FaCog, FaTimes, FaTachometerAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
 import profileImage from "../assets/profile.png";
@@ -8,7 +8,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   const menuItems = [
     { name: "Home", path: "/", icon: <FaHome /> },
-    { name: "Wallet", path: "/wallet", icon: <FaWallet /> },
+    { name: "Transactions", path: "/wallet", icon: <FaWallet /> }, // Renamed from Wallet
     { name: "Reports", path: "/reports", icon: <FaChartBar /> },
     { name: "Settings", path: "/settings", icon: <FaCog /> },
   ];
@@ -29,7 +29,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         } ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-2xl font-bold">Dashboard Menu</h2>
+          <div className="flex items-center gap-2">
+            <FaTachometerAlt className="text-xl" /> {/* Dashboard Icon */}
+            <h2 className="text-2xl font-bold">Dashboard Menu</h2>
+          </div>
           <button 
             onClick={toggleSidebar}
             className={`md:hidden hover:text-gray-300 ${
@@ -67,18 +70,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           isDarkMode ? "bg-gray-800" : "bg-gray-200"
         }`}>
           <div className="flex items-center gap-2">
-                   <img
-                     src={profileImage}
-                     alt="Your Name"
-                     className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
-                   />
-                   <div>
-                     <p className="font-medium">Your Name</p>{" "}
-                     {/* Update with your name */}
-                     <p className="text-sm opacity-70">Your Role</p>{" "}
-                     {/* Update with your role */}
-                   </div>
-                 </div>
+            <img
+              src={profileImage}
+              alt="Your Name"
+              className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
+            />
+            <div>
+              <p className="font-medium">Your Name</p>
+              <p className="text-sm opacity-70">Your Role</p>
+            </div>
+          </div>
         </div>
       </aside>
     </>
@@ -86,4 +87,5 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 export default Sidebar;
+
 
