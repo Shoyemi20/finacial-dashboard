@@ -29,7 +29,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile overlay (only shows on mobile) */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-gray-800 bg-opacity-30 z-20 md:hidden"
@@ -39,27 +39,27 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       {/* Sidebar */}
       <aside 
-        className={`fixed md:relative z-30 h-full w-64 p-5 transition-transform duration-300 ${
+        className={`fixed md:relative z-30 h-full w-64 p-5 transition-transform duration-300 ease-in-out ${
           isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-800"
         } ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         {/* Close button for mobile */}
         <button 
           onClick={toggleSidebar}
-          className={`md:hidden absolute top-2 right-2 hover:text-gray-300 ${
-            isDarkMode ? "text-white" : "text-gray-800"
+          className={`md:hidden absolute top-2 right-2 p-2 rounded-full ${
+            isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"
           }`}
         >
           <FaTimes size={20} />
         </button>
 
         {/* Menu items */}
-        <ul className="space-y-4 mt-6">
+        <ul className="space-y-2 mt-6">
           {menuItems.map((item) => (
             <li key={item.name}>
               <NavLink
                 to={item.path}
-                onClick={() => window.innerWidth < 768 && toggleSidebar()}
+                onClick={toggleSidebar} // Close sidebar on mobile when clicking a link
                 className={({ isActive }) => 
                   `flex items-center gap-3 p-3 rounded-lg transition-colors ${
                     isActive 
@@ -70,13 +70,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   }`}
               >
                 <span className="text-lg">{item.icon}</span>
-                <span>{item.name}</span>
+                <span className="text-sm md:text-base">{item.name}</span>
               </NavLink>
             </li>
           ))}
         </ul>
 
-        {/* Profile section */}
+        {/* Profile section (fixed at bottom) */}
         <div className="absolute bottom-5 left-5 right-5">
           <div className={`p-3 rounded-lg flex items-center gap-3 mb-2 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-200"
@@ -93,14 +93,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate">Your Name</p>
-              <p className="text-sm opacity-70 truncate">Your Role</p>
+              <p className="font-medium truncate text-sm md:text-base">Your Name</p>
+              <p className="text-xs opacity-70 truncate">Your Role</p>
             </div>
           </div>
           
           <button
             onClick={() => setShowLogoutModal(true)}
-            className={`w-full p-3 rounded-lg flex items-center gap-3 transition-colors ${
+            className={`w-full p-3 rounded-lg flex items-center gap-3 transition-colors text-sm md:text-base ${
               isDarkMode 
                 ? "hover:bg-gray-700 text-red-400" 
                 : "hover:bg-gray-200 text-red-600"
@@ -114,7 +114,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       {/* Logout confirmation modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-80 max-w-full mx-4`}>
+          <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-80 max-w-[90%] mx-4`}>
             <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
             <p className="mb-6">Are you sure you want to log out?</p>
             <div className="flex justify-end gap-4">
