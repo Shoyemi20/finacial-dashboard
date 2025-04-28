@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
-//import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useAuth } from "./context/AuthContext"; // Make sure to import useAuth here
+import { useState, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import { AuthProvider } from "./context/AuthContext";
 import Sidebar from "./components/Sidebar";
@@ -12,64 +11,74 @@ import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import { useLocation } from "react-router-dom";
 
 function App() {
-  const { user } = useAuth();  // Access the current user from context
-
+  const { user, setUser } = useAuth(); // Get both user and setUser from AuthContext
   const location = useLocation();
-  const hideSidebarRoutes = ["/login", "/signup"];
-  const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  //const [user, setUser] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // To toggle the sidebar open/close
+  // Define routes where sidebar/navbar should be hidden
+  const hideNavigationRoutes = ["/login", "/signup"];
+  const shouldShowNavigation = !hideNavigationRoutes.includes(location.pathname);
 
   // Firebase auth listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser); // Set user if logged in, null if not
+      setUser(currentUser);
+      setLoading(false);
     });
-    return () => unsubscribe(); // Cleanup when component unmounts
-  }, []);
+    return unsubscribe; // Cleanup on unmount
+  }, [setUser]);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen); // Toggle sidebar visibility
+    setSidebarOpen(!sidebarOpen);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="text-2xl">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <DarkModeProvider>
       <AuthProvider>
-        
-          <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-            {/* Show Sidebar only if user is logged in and not on login/signup page */}
-            {user && shouldShowSidebar && <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />}
-            
-            <div className="flex-1 flex flex-col overflow-hidden">
-              {/* Show Navbar only if user is logged in */}
-              {user && <Navbar toggleSidebar={toggleSidebar} />}
+        <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+          {/* Show Sidebar only when needed */}
+          {user && shouldShowNavigation && (
+            <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+          )}
 
-              <main className="flex-1 overflow-auto p-4">
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route
-                    path="/"
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Routes>
-              </main>
-            </div>
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Show Navbar only when needed */}
+            {user && shouldShowNavigation && (
+              <Navbar toggleSidebar={toggleSidebar} />
+            )}
+
+            <main className="flex-1 overflow-auto p-4">
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* Add more protected routes as needed */}
+              </Routes>
+            </main>
           </div>
-        
+        </div>
       </AuthProvider>
     </DarkModeProvider>
   );
 }
 
 export default App;
-
 

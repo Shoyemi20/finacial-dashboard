@@ -6,55 +6,63 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { auth } from "../firebase"; // make sure you export `auth` from firebase.js
+import { auth } from "../firebase";
 
-// Create the AuthContext
 const AuthContext = createContext();
 
-// Custom hook to use the AuthContext
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);  // State to hold the user info
-  const [loading, setLoading] = useState(true);  // State to track loading status
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Listen to authentication state changes
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);  // Set user when logged in
-      } else {
-        setUser(null);  // Set user to null when logged out
-      }
-      setLoading(false);  // Stop loading once the state is set
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
     });
 
-    return () => unsub();  // Clean up the listener on component unmount
+    return unsubscribe; // Cleanup on unmount
   }, []);
 
-  // Signup function
-  const signup = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signup = async (email, password) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      return userCredential;
+    } catch (error) {
+      throw error; // Re-throw to handle in the component
+    }
   };
 
-  // Login function
-  const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      return userCredential;
+    } catch (error) {
+      throw error;
+    }
   };
 
-  // Logout function
-  const logout = () => {
-    return signOut(auth);
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      throw error;
+    }
   };
 
-  // Only render children once the loading is finished
-  if (loading) {
-    return <div>Loading...</div>;  // Or you can add a loader component
-  }
+  // Provide all necessary values
+  const value = {
+    user,
+    setUser, // Now exposed to consumers
+    signup,
+    login,
+    logout,
+    loading, // Optional: if components want to handle loading state
+  };
 
-  // Provide the user and auth functions via context
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
