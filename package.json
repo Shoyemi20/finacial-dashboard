@@ -13,6 +13,7 @@
     "@headlessui/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.0.17",
     "chart.js": "^4.4.8",
+    "firebase": "^11.6.1",
     "lucide-react": "^0.503.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",

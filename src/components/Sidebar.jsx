@@ -1,7 +1,7 @@
 import { FaHome, FaWallet, FaChartBar, FaCog, FaTimes, FaTachometerAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
-import profileImage from "../assets/profile.png";
+//import profileImage from "../assets/profile.png";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { isDarkMode } = useDarkMode();
@@ -65,7 +65,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           ))}
         </ul>
 
-        {/* User Profile at Bottom */}
+        {/* User Profile at Bottom 
         <div className={`absolute bottom-5 left-5 right-5 p-3 rounded-lg flex items-center gap-3 ${
           isDarkMode ? "bg-gray-800" : "bg-gray-200"
         }`}>
@@ -81,6 +81,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             </div>
           </div>
         </div>
+          */}
       </aside>
     </>
   );

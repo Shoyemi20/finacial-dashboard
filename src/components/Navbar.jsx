@@ -9,10 +9,32 @@ import {
 import { useDarkMode } from "../context/DarkModeContext";
 import profileImage from "../assets/profile.png";
 
+
+// 🔑 Firebase logout
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+
+// ✅ Optional: Navigate to login page after logout
+import { useNavigate } from "react-router-dom";
+
 const Navbar = ({ toggleSidebar }) => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+
+  const navigate = useNavigate(); // used for redirect
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+      navigate("/login"); // redirect to login
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  
 
   const notifications = [
     { id: 1, text: "New report generated", time: "2 mins ago", read: false },
@@ -21,8 +43,11 @@ const Navbar = ({ toggleSidebar }) => {
   ];
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
 
   return (
+    <>
     <nav
       className={`sticky top-0 z-10 p-4 shadow-md flex justify-between items-center ${
         isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
@@ -131,7 +156,7 @@ const Navbar = ({ toggleSidebar }) => {
           {isDarkMode ? <FaSun className="text-yellow-300" /> : <FaMoon />}
         </button>
 
-        {/* Static Profile Section */}
+        {/* Profile Dropdown */}
         <div className="relative">
           <button
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
@@ -149,9 +174,7 @@ const Navbar = ({ toggleSidebar }) => {
           </button>
 
           {showProfileDropdown && (
-            <div
-              className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-2 z-50`}
-            >
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-2 z-50">
               <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
                 View Profile
               </button>
@@ -159,15 +182,42 @@ const Navbar = ({ toggleSidebar }) => {
                 Account Settings
               </button>
               <button
-                className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-600 dark:text-red-300"
-              >
+               className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-600 dark:text-red-300"
+                onClick={() => setShowLogoutModal(true)}
+                >
                 Log Out
-              </button>
+               </button>
             </div>
           )}
         </div>
       </div>
     </nav>
+{showLogoutModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg`}>
+      <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+      <p className="mb-6">Are you sure you want to log out?</p>
+      <div className="flex justify-end gap-4">
+        <button
+          className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500"
+          onClick={() => setShowLogoutModal(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          onClick={() => {
+            handleLogout();
+            setShowLogoutModal(false);
+          }}
+        >
+          Yes, Log Out
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+</>
   );
 };
 
